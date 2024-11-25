@@ -1,22 +1,32 @@
-version: '3.8'
-
 services:
-  client:
+  frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.client
+      context: frontend
+      target: development
     ports:
-      - "3001:3001" # Vite client sẽ chạy trên port 3000
+      - 3000:3000
+    stdin_open: true
     volumes:
-      - .:/app
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
+    networks:
+      - react-express-chat
     depends_on:
-      - server
+      - backend
 
-  server:
+  backend:
+    restart: always
     build:
-      context: .
-      dockerfile: Dockerfile.server
-    ports:
-      - "5000:5000" # WebSocket server sẽ chạy trên port 5000
+      context: backend
+      target: development
     volumes:
-      - .:/app
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - react-express-chat
+    expose:
+      - 3000
+
+networks:
+  react-express-chat:

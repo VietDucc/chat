@@ -6,17 +6,28 @@ const app = express();
 const server = http.createServer(app);
 const serverPort = 3001;
 
+//Cau hinh SocketIO voi CORS
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
+    origin: "*", //Cho phep bat ki nguon nao ket noi
+    methods: ["GET", "POST"], //Chi dinh cac phuong thuc HTTP
   },
 });
 
+// Quan li nguoi dung
 const activeUsers = new Map();
 
 function generateRandomName() {
-  const names = ["Alex", "Sam", "Charlie", "Jordan", "Taylor", "Morgan", "Casey", "Jamie"];
+  const names = [
+    "Alex",
+    "Sam",
+    "Charlie",
+    "Jordan",
+    "Taylor",
+    "Morgan",
+    "Casey",
+    "Jamie",
+  ];
   return names[Math.floor(Math.random() * names.length)];
 }
 
@@ -24,6 +35,7 @@ function generateRandomAvatar(id) {
   return `https://robohash.org/${id}?set=set4`;
 }
 
+// Xu li yeu cau ket noi
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
@@ -34,6 +46,7 @@ io.on("connection", (socket) => {
   };
   activeUsers.set(socket.id, user);
 
+  // Gui va nhan tin nhan
   socket.on("send_message", (data) => {
     io.emit("receive_message", { ...data, user });
   });
