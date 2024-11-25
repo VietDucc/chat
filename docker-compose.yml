@@ -4,7 +4,7 @@ services:
       context: frontend
       target: development
     ports:
-      - 3000:3000
+      - 5173:5173
     stdin_open: true
     volumes:
       - ./frontend:/usr/src/app
@@ -26,7 +26,7 @@ services:
     networks:
       - react-express-chat
     expose:
-      - 3000
+      - 3001
 
 networks:
   react-express-chat:
