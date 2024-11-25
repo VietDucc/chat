@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     echo 'Starting Docker Compose with specified file'
-                    sh 'docker-compose -f compose.yaml up -d'
+                    sh 'docker-compose up -d'
                 }
             }
 }
