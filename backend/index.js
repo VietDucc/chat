@@ -1,33 +1,21 @@
 import { Server as SocketIOServer } from "socket.io";
 import express from "express";
-import http from "http";
+import { createServer } from "http";
 
 const app = express();
-const server = http.createServer(app);
-// const serverPort = process.env.PORT || 3001;
-const serverPort ="https://chat-3d1j.vercel.app/";
-//Cau hinh SocketIO voi CORS
+const server = createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "*", //Cho phep bat ki nguon nao ket noi
-    methods: ["GET", "POST"], //Chi dinh cac phuong thuc HTTP
+    origin: "*",
+    methods: ["GET", "POST"],
   },
 });
 
-// Quan li nguoi dung
+// Quản lý người dùng
 const activeUsers = new Map();
 
 function generateRandomName() {
-  const names = [
-    "Alex",
-    "Sam",
-    "Charlie",
-    "Jordan",
-    "Taylor",
-    "Morgan",
-    "Casey",
-    "Jamie",
-  ];
+  const names = ["Alex", "Sam", "Charlie", "Jordan", "Taylor", "Morgan", "Casey", "Jamie"];
   return names[Math.floor(Math.random() * names.length)];
 }
 
@@ -35,7 +23,7 @@ function generateRandomAvatar(id) {
   return `https://robohash.org/${id}?set=set4`;
 }
 
-// Xu li yeu cau ket noi
+// Xử lý kết nối từ client
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
@@ -46,7 +34,6 @@ io.on("connection", (socket) => {
   };
   activeUsers.set(socket.id, user);
 
-  // Gui va nhan tin nhan
   socket.on("send_message", (data) => {
     io.emit("receive_message", { ...data, user });
   });
@@ -57,6 +44,9 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(serverPort, () => {
-  console.log(`Server is listening on port ${serverPort}`);
-});
+export default (req, res) => {
+  if (!res.socket.server.io) {
+    res.socket.server.io = io;
+  }
+  res.end();
+};
