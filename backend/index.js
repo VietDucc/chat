@@ -4,8 +4,8 @@ import http from "http";
 
 const app = express();
 const server = http.createServer(app);
-const serverPort = process.env.PORT || 3001;
-
+// const serverPort = process.env.PORT || 3001;
+const serverPort ="https://chat-3d1j.vercel.app/";
 //Cau hinh SocketIO voi CORS
 const io = new SocketIOServer(server, {
   cors: {
