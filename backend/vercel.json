@@ -1,8 +1,9 @@
 {
-  "routes": [
+  "builds": [
     {
-      "src": "/socket.io/.*",
-      "dest": "/api/socket"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ]
 }
