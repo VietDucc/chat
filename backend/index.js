@@ -1,9 +1,10 @@
 import { Server as SocketIOServer } from "socket.io";
-import express from "express";
 import { createServer } from "http";
+import express from "express";
 
 const app = express();
 const server = createServer(app);
+
 const io = new SocketIOServer(server, {
   cors: {
     origin: "*",
@@ -11,7 +12,6 @@ const io = new SocketIOServer(server, {
   },
 });
 
-// Quản lý người dùng
 const activeUsers = new Map();
 
 function generateRandomName() {
@@ -23,7 +23,6 @@ function generateRandomAvatar(id) {
   return `https://robohash.org/${id}?set=set4`;
 }
 
-// Xử lý kết nối từ client
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
@@ -44,9 +43,11 @@ io.on("connection", (socket) => {
   });
 });
 
-export default (req, res) => {
+// ✅ API Route cho Vercel (quan trọng)
+export default function handler(req, res) {
   if (!res.socket.server.io) {
+    console.log("Setting up Socket.IO server...");
     res.socket.server.io = io;
   }
   res.end();
-};
+}
